@@ -1,7 +1,7 @@
 # Portfolio
 
 Personal dev portfolio site inspired by [Ryan Fitzgerald](https://github.com/RyanFitzgerald/devportfolio).
-View the demo [here](mariocd10.github.io/portfolio).
+View the demo [here](https://mariocd10.github.io/portfolio/).
 
 ## Features
 
