@@ -29,7 +29,7 @@
 */
 
 // Define base and accent colors
-$base-color: #b60000;
+$base-color: #732431;
 $base-color-hover: darken($base-color, 10%);
 
 // Define background colors
@@ -377,6 +377,25 @@ footer {
         font-weight: 500;
         font-size: 2.25em;
         margin-bottom: 15px;
+    }
+
+    .social {
+        text-align:center;
+        margin-bottom: 15px;
+        li {
+            display: inline-block;
+            font-size: 2.50em;
+            list-style: none;
+        }
+
+        a {
+            color: lighten($base-color, 25%);
+            padding: 10px;
+
+            &:hover {
+                color: $base-color;
+            }
+        }
     }
 }
 
