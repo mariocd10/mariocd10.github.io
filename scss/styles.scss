@@ -462,6 +462,7 @@ footer {
 #about {
     padding: 75px 15px;
     border-bottom: 1px solid $border;
+    text-align: center;
 
     h2 {
         color: $heading;
@@ -470,6 +471,11 @@ footer {
     p {
         color: $text;
         margin: 0;
+        text-align: left;
+    }
+
+    a {
+        color: $base-color;
     }
 }
 
