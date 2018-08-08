@@ -471,13 +471,18 @@ footer {
 
     p {
         color: $text;
-        margin: 0;
+        margin: 25px;
         text-align: left;
     }
 
     a {
         color: $base-color;
     }
+}
+
+.profile-pic {
+    display: block;
+    margin: 0 auto;
 }
 
 /*
