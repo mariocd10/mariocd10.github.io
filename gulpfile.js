@@ -28,6 +28,12 @@ gulp.task('images', function(){
         .pipe(cache(imagemin()))
         .pipe(gulp.dest('dist/images'))     
 })
+
+gulp.task('fonts', function() {
+  return gulp.src('app/fonts/**/*')
+  .pipe(gulp.dest('dist/fonts'))
+})
+
 gulp.task('useref', function(){
     return gulp.src('app/*.html')
         .pipe(useref())
@@ -43,7 +49,7 @@ gulp.task('move-css', function(){
 })
 
 gulp.task('build', function(callback){
-    runSequence('clean:dist', ['sass', 'useref','move-css', 'images'], callback)
+    runSequence('clean:dist', ['sass', 'useref','move-css', 'images', 'fonts'], callback)
 })
 
 // Development Process
