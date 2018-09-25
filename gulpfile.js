@@ -49,7 +49,7 @@ gulp.task('move-css', function(){
 })
 
 gulp.task('build', function(callback){
-    runSequence('clean:dist', ['sass', 'useref','move-css', 'images', 'fonts'], callback)
+    runSequence('clean:dist', ['sass', 'useref','move-css', 'images'], callback)
 })
 
 // Development Process
