@@ -1,78 +1,36 @@
 var gulp = require('gulp');
-var sass = require('gulp-sass');
-var browserSync = require('browser-sync').create();
-var useref = require('gulp-useref');
+var plumber = require('gulp-plumber');
 var uglify = require('gulp-uglify');
-var gulpIf = require('gulp-if');
-var cssnano = require('gulp-cssnano');
-var imagemin = require('gulp-imagemin');
-var cache = require('gulp-cache');
-var del = require('del');
-var runSequence = require('run-sequence');
+var sass = require('gulp-sass');
+var wait = require('gulp-wait');
+var rename = require('gulp-rename');
+var autoprefixer = require('gulp-autoprefixer');
 
-gulp.task('default', function(callback){
-    runSequence(['sass','browserSync', 'watch'], callback)
-})
-
-// Optimization Process
-gulp.task('clean:dist', function(){
-    return del.sync('dist');
-})
-
-gulp.task('cache:clear', function(callback){
-    return cache.clearAll(callback);
-})
-
-gulp.task('images', function(){
-    return gulp.src('app/images/**/*.+(png|jpg|jpeg|gif|svg)')
-        .pipe(cache(imagemin()))
-        .pipe(gulp.dest('dist/images'))     
-})
-
-gulp.task('fonts', function() {
-  return gulp.src('app/fonts/**/*')
-  .pipe(gulp.dest('dist/fonts'))
-})
-
-gulp.task('useref', function(){
-    return gulp.src('app/*.html')
-        .pipe(useref())
-        // minifies only if it's a js file
-        .pipe(gulpIf('*.js',uglify()))
-        .pipe(gulpIf('*.css', cssnano()))
-        .pipe(gulp.dest('dist'))
-});
-
-gulp.task('move-css', function(){
-    return gulp.src('app/css/bootstrap.min.css')
-        .pipe(gulp.dest('dist/css'))
-})
-
-gulp.task('build', function(callback){
-    runSequence('clean:dist', ['sass', 'useref','move-css', 'images'], callback)
-})
-
-// Development Process
-gulp.task('browserSync',function(){
-    browserSync.init({
-        server: {
-            baseDir: 'app'
-        },
-    })
-});
-
-gulp.task('sass', function () {
-    return gulp.src('app/scss/**/*.scss') //get source files with gulp.src
-        .pipe(sass())
-        .pipe(gulp.dest('app/css'))
-        .pipe(browserSync.reload({
-            stream: true
+gulp.task('scripts', function() {
+    return gulp.src('js/scripts.js')
+        .pipe(plumber(plumber({
+            errorHandler: function (err) {
+                console.log(err);
+                this.emit('end');
+            }
+        })))
+        .pipe(uglify({
+            output: {
+                comments: '/^!/'
+            }
         }))
+        .pipe(rename({extname: '.min.js'}))
+        .pipe(gulp.dest('js'));
 });
 
+gulp.task('styles', function () {
+    return gulp.src('./scss/styles.scss')
+        .pipe(wait(250))
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(gulp.dest('./css'));
+});
 
-gulp.task('watch',['browserSync','sass'] ,function(){
-    gulp.watch('app/scss/**/*.scss',['sass']);
-    gulp.watch('app/*.html', browserSync.reload);
-    gulp.watch('app/js/**/*.js', browserSync.reload);
-})
+gulp.task('watch', ['scripts', 'styles'], function() {
+    gulp.watch('js/*.js', ['scripts']);
+    gulp.watch('scss/*.scss', ['styles']);
+});
