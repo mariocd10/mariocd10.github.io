@@ -17,12 +17,18 @@
   "author": "Mario DeLaPaz",
   "license": "MIT",
   "devDependencies": {
+    "browser-sync": "^2.26.3",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.1",
     "gulp-plumber": "^1.1.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
     "gulp-uglify": "^3.0.0",
-    "gulp-wait": "0.0.2"
+    "gulp-useref": "^3.1.5",
+    "gulp-wait": "0.0.2",
+    "run-sequence": "^2.2.1"
+  },
+  "dependencies": {
+    "gulp-cssnano": "^2.1.3"
   }
 }

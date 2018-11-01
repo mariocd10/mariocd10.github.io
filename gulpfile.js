@@ -1,36 +1,50 @@
 var gulp = require('gulp');
-var plumber = require('gulp-plumber');
-var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
-var wait = require('gulp-wait');
-var rename = require('gulp-rename');
-var autoprefixer = require('gulp-autoprefixer');
+var browserSync = require('browser-sync').create();
+var useref = require('gulp-useref');
+var uglify = require('gulp-uglify');
+var gulpIf = require('gulp-if');
+var cssnano = require('gulp-cssnano');
+var plumber = require('gulp-plumber');
+var runSequence = require('run-sequence');
 
-gulp.task('scripts', function() {
-    return gulp.src('js/scripts.js')
-        .pipe(plumber(plumber({
-            errorHandler: function (err) {
-                console.log(err);
-                this.emit('end');
-            }
-        })))
-        .pipe(uglify({
-            output: {
-                comments: '/^!/'
-            }
+gulp.task('default', function(){
+    runSequence(['sass', 'browserSync', 'watch'], callback)
+})
+
+gulp.task('useref', function(){
+    return gulp.src('./*.html')
+        .pipe(useref())
+        //minifies only if it's a js file
+        .pipe(gulpIf('*.js', uglify()))
+        .pipe(gulpIf('*.css', cssnano()))
+        .pipe(gulp.dest('./'))
+})
+
+gulp.task('build', function(callback){
+    runSequence('sass', ['useref'], callback)
+})
+
+// Development Process
+gulp.task('browserSync', function(){
+    browserSync.init({
+        server: {
+            baseDir: './'
+        }
+    })
+});
+
+gulp.task('sass', function () {
+    return gulp.src('./scss/**/*.scss')
+        .pipe(sass())
+        .pipe(gulp.dest('./css'))
+        .pipe(browserSync.reload({
+            stream: true
         }))
-        .pipe(rename({extname: '.min.js'}))
-        .pipe(gulp.dest('js'));
 });
 
-gulp.task('styles', function () {
-    return gulp.src('./scss/styles.scss')
-        .pipe(wait(250))
-        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(gulp.dest('./css'));
-});
-
-gulp.task('watch', ['scripts', 'styles'], function() {
-    gulp.watch('js/*.js', ['scripts']);
-    gulp.watch('scss/*.scss', ['styles']);
+gulp.task('watch', ['browserSync', 'sass'], function() {
+    gulp.watch('scss/**/*.scss', ['sass']);
+    gulp.watch('./index.html', browserSync.reload);
+    gulp.watch('js/**/*.js', browserSync.reload);
 });
